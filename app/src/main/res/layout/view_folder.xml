@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <LinearLayout
+            android:id="@+id/title_folder_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:visibility="invisible">
+
+            <ImageView
+                android:id="@+id/back_folder_iv"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/back_button_selector"
+                android:padding="12dp"
+                android:src="@mipmap/left" />
+
+            <TextView
+                android:id="@+id/path_folder_tv"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#54abee"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/number_folder_tv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:text="3 Jobs!"
+            android:textSize="16sp" />
+    </FrameLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/content_folder_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        android:paddingRight="40dp" />
+
+</LinearLayout>

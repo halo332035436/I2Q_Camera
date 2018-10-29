@@ -1,0 +1,63 @@
+apply plugin: 'com.android.application'
+
+
+android {
+    signingConfigs {
+        config {
+            keyAlias 'i2q'
+            keyPassword '123456'
+            storeFile file('D:/ASProjects/i2qCamera/assets/i2q.jks')
+            storePassword '123456'
+        }
+    }
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.symbio.i2qcamera"
+        minSdkVersion 21
+        targetSdkVersion 27
+        versionCode 10003
+        versionName "1.0.3"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildToolsVersion '27.0.3'
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    //ui
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    //    implementation 'com.qmuiteam:qmui:1.1.7'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.42'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
+    implementation project(':takephoto_library')
+    //img
+    implementation 'com.github.chrisbanes:PhotoView:2.1.4'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    //di
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    //util
+    implementation 'com.orhanobut:logger:2.2.0'
+    implementation 'com.android.support:multidex:1.0.1'
+    implementation 'com.blankj:utilcode:1.20.0'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    //test
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}

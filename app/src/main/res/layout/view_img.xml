@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/title_img_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/back_img_iv"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:background="#54abee"
+            android:padding="12dp"
+            android:src="@mipmap/left" />
+
+        <TextView
+            android:id="@+id/path_img_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#54abee"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+
+        <ImageView
+            android:id="@+id/quick_img_tv"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:background="#54abee"
+            android:src="@mipmap/up_down" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#54abee" />
+
+    </LinearLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/content_img_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp" />
+
+</LinearLayout>
