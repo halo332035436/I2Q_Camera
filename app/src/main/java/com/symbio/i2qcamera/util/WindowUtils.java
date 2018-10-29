@@ -21,11 +21,6 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/**
- * 弹窗辅助类
- *
- * @ClassName WindowUtils
- */
 public class WindowUtils {
     private static final String LOG_TAG = "WindowUtils";
     private static View mView = null;
