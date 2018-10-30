@@ -18,9 +18,9 @@ import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.symbio.i2qcamera.R;
-import com.symbio.i2qcamera.activity.MainActivity;
+import com.symbio.i2qcamera.ui.activity.MainActivity;
 import com.symbio.i2qcamera.adapter.FolderListAdapter;
-import com.symbio.i2qcamera.base.Config;
+import com.symbio.i2qcamera.app.Config;
 import com.symbio.i2qcamera.data.FolderRefreshEvent;
 import com.symbio.i2qcamera.util.CommonUtil;
 

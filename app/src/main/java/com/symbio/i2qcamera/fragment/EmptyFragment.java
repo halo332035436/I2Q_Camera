@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.symbio.i2qcamera.R;
-import com.symbio.i2qcamera.base.Config;
+import com.symbio.i2qcamera.app.Config;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

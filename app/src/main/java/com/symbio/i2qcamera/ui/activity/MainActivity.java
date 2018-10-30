@@ -1,4 +1,4 @@
-package com.symbio.i2qcamera.activity;
+package com.symbio.i2qcamera.ui.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -12,10 +12,12 @@ import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.symbio.i2qcamera.R;
 import com.symbio.i2qcamera.adapter.ContentFragmentAdapter;
-import com.symbio.i2qcamera.base.Config;
+import com.symbio.i2qcamera.app.Config;
+import com.symbio.i2qcamera.base.contract.MainContract;
 import com.symbio.i2qcamera.fragment.EmptyFragment;
 import com.symbio.i2qcamera.fragment.FolderFragment;
 import com.symbio.i2qcamera.fragment.ImgFragment;
+import com.symbio.i2qcamera.presenter.MainPresenterImpl;
 import com.symbio.i2qcamera.view.NoScrollViewPager;
 
 import java.io.File;
@@ -27,7 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements MainContract.View {
 
     @BindView(R.id.main_quit_btn)
     ImageView mainQuitBtn;
@@ -36,12 +38,14 @@ public class MainActivity extends FragmentActivity {
     private Unbinder mBind;
     private List<Fragment> mFragments;
     private ContentFragmentAdapter mAdapter;
+    private MainContract.Presenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mBind = ButterKnife.bind(this);
+        mPresenter = new MainPresenterImpl(this);
         initState();
     }
 
@@ -58,9 +62,6 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-//        Intent intent = getIntent();
-//        finish();
-//        startActivity(intent);
     }
 
     @Override
@@ -122,7 +123,11 @@ public class MainActivity extends FragmentActivity {
 
     @OnClick(R.id.main_quit_btn)
     public void onViewClicked() {
+        mPresenter.exit();
+    }
 
+    @Override
+    public void showExitDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setMessage("Sure to quit?")
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -138,8 +143,18 @@ public class MainActivity extends FragmentActivity {
                     }
                 });
         AlertDialog dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCanceledOnTouchOutside(true);
         dialog.show();
     }
 
+    @Override
+    public void initFragments() {
+        mFragments = new ArrayList<>();
+        mFragments.add(EmptyFragment.newInstance());
+        mFragments.add(FolderFragment.newInstance());
+        mFragments.add(ImgFragment.newInstance());
+        mAdapter = new ContentFragmentAdapter(getSupportFragmentManager(), mFragments);
+        mainContentVp.setAdapter(mAdapter);
+        mainContentVp.setOffscreenPageLimit(5);
+    }
 }

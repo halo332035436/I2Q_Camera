@@ -1,4 +1,4 @@
-package com.symbio.i2qcamera.base;
+package com.symbio.i2qcamera.app;
 
 import android.os.Environment;
 

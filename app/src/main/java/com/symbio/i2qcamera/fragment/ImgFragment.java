@@ -28,7 +28,7 @@ import com.blankj.utilcode.util.SizeUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.symbio.i2qcamera.R;
 import com.symbio.i2qcamera.activity.AlbumActivity;
-import com.symbio.i2qcamera.activity.MainActivity;
+import com.symbio.i2qcamera.ui.activity.MainActivity;
 import com.symbio.i2qcamera.adapter.ImgListAdapter;
 import com.symbio.i2qcamera.data.FolderRefreshEvent;
 import com.symbio.i2qcamera.data.ImgDeleteEvent;
@@ -102,13 +102,17 @@ public class ImgFragment extends TakePhotoFragment {
         mContentImgRv.setPadding(padding, SizeUtils.dp2px(15), padding, SizeUtils.dp2px(15));
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), num);
         mContentImgRv.setLayoutManager(layoutManager);
+        initData();
+    }
+
+    private void initData() {
         mAdapter = new ImgListAdapter(R.layout.item_img, new ArrayList<>());
         View addView = getLayoutInflater().inflate(R.layout.item_add_img, null);
         View addLayout = addView.findViewById(R.id.add_layout);
         addLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "add img", Toast.LENGTH_SHORT);
+                Toast.makeText(getContext(), "add img", Toast.LENGTH_SHORT).show();
             }
         });
         mContentImgRv.setAdapter(mAdapter);
