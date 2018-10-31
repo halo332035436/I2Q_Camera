@@ -37,4 +37,15 @@ public class CommonUtil {
         return files == null ? 0 : files.length;
     }
 
+    public static String simplifyFileName(String fileName) {
+        if (fileName.contains("ID=")) {
+            String[] checkPathName = fileName.split(" \\(ID=");
+            if (checkPathName != null && checkPathName.length > 1) {
+                return checkPathName[0];
+            }
+        }
+        return fileName;
+
+    }
+
 }

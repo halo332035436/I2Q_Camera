@@ -10,15 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/black"
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/dp_4"
-        android:paddingBottom="@dimen/dp_4">
+        android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/dp_10"
+            android:padding="8dp"
             android:src="@mipmap/icon"/>
 
         <TextView
@@ -28,22 +26,21 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/app_name"
-
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"/>
 
         <ImageView
             android:id="@+id/main_quit_btn"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="10dp"
             android:background="@drawable/quit_button_selector"
+            android:padding="8dp"
             android:src="@mipmap/quit"/>
     </LinearLayout>
 
-    <com.symbio.i2qcamera.view.NoScrollViewPager
+    <com.symbio.i2qcamera.ui.view.NoScrollViewPager
         android:id="@+id/main_content_vp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

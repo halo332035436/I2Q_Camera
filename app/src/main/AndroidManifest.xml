@@ -53,7 +53,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.AlbumActivity" />
+        <activity android:name=".ui.activity.AlbumActivity" />
         <activity
             android:name="com.huantansheng.easyphotos.ui.EasyPhotosActivity"
             android:screenOrientation="landscape"

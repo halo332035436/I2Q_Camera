@@ -1,7 +1,5 @@
 package com.symbio.i2qcamera.ui.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -11,14 +9,16 @@ import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.symbio.i2qcamera.R;
-import com.symbio.i2qcamera.adapter.ContentFragmentAdapter;
+import com.symbio.i2qcamera.ui.adapter.ContentFragmentAdapter;
 import com.symbio.i2qcamera.app.Config;
 import com.symbio.i2qcamera.base.contract.MainContract;
-import com.symbio.i2qcamera.fragment.EmptyFragment;
-import com.symbio.i2qcamera.fragment.FolderFragment;
-import com.symbio.i2qcamera.fragment.ImgFragment;
+import com.symbio.i2qcamera.ui.fragment.EmptyFragment;
+import com.symbio.i2qcamera.ui.fragment.FolderFragment;
+import com.symbio.i2qcamera.ui.fragment.ImgFragment;
 import com.symbio.i2qcamera.presenter.MainPresenterImpl;
-import com.symbio.i2qcamera.view.NoScrollViewPager;
+import com.symbio.i2qcamera.util.DialogUtils;
+import com.symbio.i2qcamera.util.WindowUtils;
+import com.symbio.i2qcamera.ui.view.NoScrollViewPager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,6 +44,7 @@ public class MainActivity extends FragmentActivity implements MainContract.View 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        WindowUtils.setStateBarColor(this, android.R.color.black);
         mBind = ButterKnife.bind(this);
         mPresenter = new MainPresenterImpl(this);
         initState();
@@ -128,23 +129,10 @@ public class MainActivity extends FragmentActivity implements MainContract.View 
 
     @Override
     public void showExitDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setMessage("Sure to quit?")
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                });
-        AlertDialog dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
+        DialogUtils.showNoOrYesDialog(this,"Sure to quit?",
+                (dialog, index) -> dialog.dismiss(),
+                (dialog, index) -> finish());
+
     }
 
     @Override

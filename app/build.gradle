@@ -4,14 +4,14 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     buildToolsVersion '27.0.3'
-    signingConfigs {
-        config {
-            keyAlias 'i2q'
-            keyPassword '123456'
-            storeFile file('D:/ASProjects/i2qCamera/assets/i2q.jks')
-            storePassword '123456'
-        }
-    }
+//    signingConfigs {
+//        config {
+//            keyAlias 'i2q'
+//            keyPassword '123456'
+//            storeFile file('D:/ASProjects/i2qCamera/assets/i2q.jks')
+//            storePassword '123456'
+//        }
+//    }
     defaultConfig {
         applicationId "com.symbio.i2qcamera"
         minSdkVersion 21
@@ -29,7 +29,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+//            signingConfig signingConfigs.config
         }
     }
     compileOptions {
@@ -44,12 +44,10 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
-    //    implementation 'com.qmuiteam:qmui:1.1.7'
+    implementation 'com.qmuiteam:qmui:1.1.7'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.42'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
-    implementation project(':takephoto_library')
-//    implementation 'com.yuyh.imgsel:library:2.0.6'
     implementation 'com.github.HuanTanSheng:EasyPhotos:2.3.4'
     //img
     implementation 'com.github.chrisbanes:PhotoView:2.1.4'

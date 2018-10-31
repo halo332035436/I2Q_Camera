@@ -1,5 +1,6 @@
 package com.symbio.i2qcamera.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,12 +10,13 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.ImageView;
 
 import com.symbio.i2qcamera.R;
-import com.symbio.i2qcamera.adapter.MenuAdapter;
+import com.symbio.i2qcamera.ui.adapter.MenuAdapter;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -110,6 +112,18 @@ public class WindowUtils {
         });
 
         return view;
+    }
+
+    public static void setStateBarColor(Activity activity, int color) {
+        Window window = activity.getWindow();
+        //取消状态栏透明
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        //添加Flag把状态栏设为可绘制模式
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        //设置状态栏颜色
+        window.setStatusBarColor(activity.getResources().getColor(color));
+        //设置系统状态栏处于可见状态
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
     }
 }
 

@@ -1,40 +1,85 @@
 package com.symbio.i2qcamera.util;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.view.View;
 
-import com.symbio.i2qcamera.R;
-import com.symbio.i2qcamera.adapter.ImgGetAdapter;
-import com.symbio.i2qcamera.view.RimlessDialog;
-
-import java.util.List;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
+import com.symbio.i2qcamera.app.Config;
 
 public class DialogUtils {
 
-    public static void singleSelectDialog(List<String> strings, Activity context, ItemSelectListener listener) {
-        Dialog dialog = new RimlessDialog(context, R.style.myDialog);
-        //实例化布局
-        LayoutInflater inflater = context.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_property_fill_in, null);
-        RecyclerView viewList = dialogView.findViewById(R.id.rv_fill_in_property_item);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-        viewList.setLayoutManager(linearLayoutManager);
-        ImgGetAdapter imgGetAdapter = new ImgGetAdapter(R.layout.item_fill_in_img_add, strings);
-        imgGetAdapter.setOnItemClickListener((adapter, view, position) -> {
-            dialog.dismiss();
-            listener.onSelect(position);
-        });
-        viewList.setAdapter(imgGetAdapter);
-        dialog.setContentView(dialogView);
-        dialog.show();
-    }
-
     public interface ItemSelectListener {
         void onSelect(int position);
+    }
+
+    public static void showNoOrYesDialog(Context context, String content,
+                                         QMUIDialogAction.ActionListener noListener,
+                                         QMUIDialogAction.ActionListener yesListener) {
+        new QMUIDialog.MessageDialogBuilder(context)
+                .setTitle(content)
+                .addAction("No", noListener)
+                .addAction("Yes", yesListener)
+                .create(Config.QMUI_DIALOG_STYLE)
+                .show();
+
+    }
+
+    public static void singleSelectionDialog(Context context, int checkedIndex,
+                                             String[] items, ItemSelectListener listener) {
+        new QMUIDialog.CheckableDialogBuilder(context)
+                .setCheckedIndex(checkedIndex)
+                .addItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        listener.onSelect(which);
+                        dialog.dismiss();
+                    }
+                })
+                .create(Config.QMUI_DIALOG_STYLE)
+                .show();
+    }
+
+    public static void singleSelectionDialog(Context context,
+                                             String[] items,
+                                             ItemSelectListener listener) {
+        new QMUIDialog.CheckableDialogBuilder(context)
+                .addItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        listener.onSelect(which);
+                        dialog.dismiss();
+                    }
+                })
+                .create(Config.QMUI_DIALOG_STYLE)
+                .show();
+    }
+
+    public static void showSuccessTipDialog(Context context, View currentView, String tip) {
+        showInfoTipDialog(context, currentView, tip, QMUITipDialog.Builder.ICON_TYPE_SUCCESS);
+    }
+
+    public static void showFailTipDialog(Context context, View currentView, String tip) {
+        showInfoTipDialog(context, currentView, tip, QMUITipDialog.Builder.ICON_TYPE_FAIL);
+    }
+
+    public static void showInfoTipDialog(Context context, View currentView, String tip) {
+        showInfoTipDialog(context, currentView, tip, QMUITipDialog.Builder.ICON_TYPE_INFO);
+    }
+
+    public static void showTipDialog(Context context, View currentView, String tip) {
+        showInfoTipDialog(context, currentView, tip, QMUITipDialog.Builder.ICON_TYPE_NOTHING);
+    }
+
+    private static void showInfoTipDialog(Context context, View currentView, String tip, int iconType) {
+        QMUITipDialog tipDialog = new QMUITipDialog.Builder(context)
+                .setIconType(iconType)
+                .setTipWord(tip)
+                .create();
+        tipDialog.show();
+        currentView.postDelayed(() -> tipDialog.dismiss(), 1000);
     }
 
 }
