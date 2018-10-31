@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.symbio.i2qcamera">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -42,6 +43,7 @@
         <meta-data
             android:name="BUGLY_ENABLE_DEBUG"
             android:value="true" />
+
         <activity
             android:name=".ui.activity.MainActivity"
             android:screenOrientation="landscape">
@@ -52,6 +54,36 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.AlbumActivity" />
+        <activity
+            android:name="com.huantansheng.easyphotos.ui.EasyPhotosActivity"
+            android:screenOrientation="landscape"
+            tools:replace="android:screenOrientation" />
+
+        <activity
+            android:name="com.huantansheng.easyphotos.ui.PreviewActivity"
+            android:screenOrientation="landscape"
+            tools:replace="android:screenOrientation" />
+
+        <activity
+            android:name="com.huantansheng.easyphotos.ui.PuzzleActivity"
+            android:screenOrientation="landscape"
+            tools:replace="android:screenOrientation" />
+
+        <activity
+            android:name="com.huantansheng.easyphotos.ui.PuzzleSelectorActivity"
+            android:screenOrientation="landscape"
+            tools:replace="android:screenOrientation" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.symbio.i2qcamera.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths_public"
+                tools:replace="android:resource" />
+        </provider>
     </application>
 
 </manifest>

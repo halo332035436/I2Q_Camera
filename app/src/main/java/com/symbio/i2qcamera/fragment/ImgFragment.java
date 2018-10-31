@@ -3,10 +3,8 @@ package com.symbio.i2qcamera.fragment;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,20 +24,18 @@ import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.SizeUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.huantansheng.easyphotos.EasyPhotos;
 import com.symbio.i2qcamera.R;
 import com.symbio.i2qcamera.activity.AlbumActivity;
-import com.symbio.i2qcamera.ui.activity.MainActivity;
 import com.symbio.i2qcamera.adapter.ImgListAdapter;
 import com.symbio.i2qcamera.data.FolderRefreshEvent;
 import com.symbio.i2qcamera.data.ImgDeleteEvent;
+import com.symbio.i2qcamera.ui.activity.MainActivity;
 import com.symbio.i2qcamera.util.CommonUtil;
 import com.symbio.i2qcamera.util.DialogUtils;
+import com.symbio.i2qcamera.util.GlideEngine;
 import com.symbio.i2qcamera.util.WindowUtils;
 
-import org.devio.takephoto.app.TakePhoto;
-import org.devio.takephoto.app.TakePhotoFragment;
-import org.devio.takephoto.model.TImage;
-import org.devio.takephoto.model.TResult;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -56,9 +52,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class ImgFragment extends TakePhotoFragment {
+public class ImgFragment extends Fragment {
 
     private static final int REQ_FULL_SIZE_CAPTURE = 10000;
+    private static final String FILE_PROVIDER_AUTHORITY = "com.symbio.i2qcamera.fileprovider";
+    private static final int REQUEST_CODE_CAMERA = 10001;
+    private static final int REQUEST_CODE_ALBUM = 10002;
+    private static final int RESULT_CODE_SUCCESS = -1;
+    private static final int RESULT_CODE_CANCEL = 0;
     @BindView(R.id.back_img_iv)
     ImageView mBackImgIv;
     @BindView(R.id.path_img_tv)
@@ -74,7 +75,6 @@ public class ImgFragment extends TakePhotoFragment {
     private File mCurrentFile;
     private File mCurrentImg;
     private Handler mHandler = new Handler();
-    private TakePhoto mTakePhoto;
     private boolean isFirstOpenCamera = true;
     private List<String> mMenuList;
 
@@ -127,7 +127,7 @@ public class ImgFragment extends TakePhotoFragment {
                         public void onSelect(int position) {
                             switch (position) {
                                 case 0:
-                                    mTakePhoto.onPickMultiple(9);
+//                                    mTakePhoto.onPickMultiple(9);
                                     break;
                                 case 1:
                                     openCamera();
@@ -218,14 +218,28 @@ public class ImgFragment extends TakePhotoFragment {
     }
 
     private void takePhoto() {
-        mCurrentImg = new File(mCurrentFile, System.currentTimeMillis() + ".jpg");
-        Uri uri = Uri.fromFile(mCurrentImg);
-        // 跳转
-        Intent fullIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        fullIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        fullIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        startActivityForResult(fullIntent, REQ_FULL_SIZE_CAPTURE);
-        showMenu();
+//        mCurrentImg = new File(mCurrentFile, System.currentTimeMillis() + ".jpg");
+//        Uri uri = Uri.fromFile(mCurrentImg);
+//        // 跳转
+//        Intent fullIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        fullIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//        fullIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//        startActivityForResult(fullIntent, REQ_FULL_SIZE_CAPTURE);
+//        showMenu();
+
+//        Uri uri = Uri.fromFile(mCurrentFile);
+//        mTakePhoto.onPickFromCapture(uri);
+
+        EasyPhotos.createAlbum(this, true, GlideEngine.getInstance())
+                .setFileProviderAuthority(FILE_PROVIDER_AUTHORITY)//参数说明：见下方`FileProvider的配置`
+                .setCount(9)//参数说明：最大可选数，默认1
+                .setPuzzleMenu(false)
+                .start(REQUEST_CODE_ALBUM);
+
+//        EasyPhotos.createCamera(this)//参数说明：上下文
+//                .setFileProviderAuthority(FILE_PROVIDER_AUTHORITY)//参数说明：见下方`FileProvider的配置`
+//                .start(REQUEST_CODE_CAMERA);
+
     }
 
     private void showMenu() {
@@ -240,7 +254,21 @@ public class ImgFragment extends TakePhotoFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQ_FULL_SIZE_CAPTURE) {
+        if (requestCode == REQUEST_CODE_ALBUM) {
+            if (resultCode == RESULT_CODE_SUCCESS) {
+                ArrayList<String> resultPaths = data.getStringArrayListExtra(EasyPhotos.RESULT_PATHS);
+                for (String originalPath : resultPaths) {
+                    File srcFile = new File(originalPath);
+                    if (srcFile.exists()) {
+                        File destFile = new File(mCurrentFile, System.currentTimeMillis() + ".jpg");
+                        boolean copyFile = FileUtils.copyFile(srcFile, destFile);
+                        if (copyFile) {
+                            mAdapter.addData(mAdapter.getData().size() - 1, destFile);
+                        }
+                    }
+                }
+            }
+        } else if (requestCode == REQUEST_CODE_CAMERA) {
             if (resultCode == -1) {
                 if (mCurrentImg.exists()) {
                     mAdapter.addData(mAdapter.getData().size() - 1, mCurrentImg);
@@ -265,7 +293,6 @@ public class ImgFragment extends TakePhotoFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        mTakePhoto = getTakePhoto();
         mMenuList = new ArrayList<>();
         mMenuList.add("Album");
         mMenuList.add("Camera");
@@ -324,23 +351,28 @@ public class ImgFragment extends TakePhotoFragment {
         }
     }
 
-    @Override
-    public void takeSuccess(TResult result) {
-        super.takeSuccess(result);
-        ArrayList<TImage> images = result.getImages();
-        for (TImage tImage : images) {
-            String originalPath = tImage.getOriginalPath();
-            File srcFile = new File(originalPath);
-            if (srcFile.exists()) {
-                File destFile = new File(mCurrentFile, System.currentTimeMillis() + ".jpg");
-                boolean copyFile = FileUtils.copyFile(srcFile, destFile);
-                if (copyFile) {
-                    mAdapter.addData(mAdapter.getData().size() - 1, destFile);
-                }
-            }
-        }
-
-    }
+//    @Override
+//    public void takeSuccess(TResult result) {
+//        super.takeSuccess(result);
+//        ArrayList<TImage> images = result.getImages();
+//        for (TImage tImage : images) {
+//            String originalPath = tImage.getOriginalPath();
+//            File srcFile = new File(originalPath);
+//            if (srcFile.exists()) {
+//                File destFile = new File(mCurrentFile, System.currentTimeMillis() + ".jpg");
+//                boolean copyFile = FileUtils.copyFile(srcFile, destFile);
+//                if (copyFile) {
+//                    mAdapter.addData(mAdapter.getData().size() - 1, destFile);
+//                }
+//            }
+//        }
+//
+//    }
+//
+//    @Override
+//    public void takeCancel() {
+//        super.takeCancel();
+//    }
 
     public void loadCheckPath(File file) {
         if (mAdapter == null) {
