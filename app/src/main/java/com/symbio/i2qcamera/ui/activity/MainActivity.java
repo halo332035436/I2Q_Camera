@@ -2,40 +2,37 @@ package com.symbio.i2qcamera.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.widget.ImageView;
 
 import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.symbio.i2qcamera.R;
-import com.symbio.i2qcamera.ui.adapter.ContentFragmentAdapter;
 import com.symbio.i2qcamera.app.Config;
+import com.symbio.i2qcamera.base.BaseActivity;
 import com.symbio.i2qcamera.base.contract.MainContract;
+import com.symbio.i2qcamera.presenter.MainPresenterImpl;
+import com.symbio.i2qcamera.ui.adapter.ContentFragmentAdapter;
 import com.symbio.i2qcamera.ui.fragment.EmptyFragment;
 import com.symbio.i2qcamera.ui.fragment.FolderFragment;
 import com.symbio.i2qcamera.ui.fragment.ImgFragment;
-import com.symbio.i2qcamera.presenter.MainPresenterImpl;
+import com.symbio.i2qcamera.ui.view.NoScrollViewPager;
 import com.symbio.i2qcamera.util.DialogUtils;
 import com.symbio.i2qcamera.util.WindowUtils;
-import com.symbio.i2qcamera.ui.view.NoScrollViewPager;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
-public class MainActivity extends FragmentActivity implements MainContract.View {
+public class MainActivity extends BaseActivity implements MainContract.View {
 
     @BindView(R.id.main_quit_btn)
     ImageView mainQuitBtn;
     @BindView(R.id.main_content_vp)
     NoScrollViewPager mainContentVp;
-    private Unbinder mBind;
     private List<Fragment> mFragments;
     private ContentFragmentAdapter mAdapter;
     private MainContract.Presenter mPresenter;
@@ -43,11 +40,19 @@ public class MainActivity extends FragmentActivity implements MainContract.View 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         WindowUtils.setStateBarColor(this, android.R.color.black);
-        mBind = ButterKnife.bind(this);
         mPresenter = new MainPresenterImpl(this);
         initState();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
+    public int getLayoutResID() {
+        return R.layout.activity_main;
     }
 
     private void initFragment() {
@@ -58,17 +63,6 @@ public class MainActivity extends FragmentActivity implements MainContract.View 
         mAdapter = new ContentFragmentAdapter(getSupportFragmentManager(), mFragments);
         mainContentVp.setAdapter(mAdapter);
         mainContentVp.setOffscreenPageLimit(5);
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mBind.unbind();
     }
 
     private void initState() {
@@ -129,10 +123,9 @@ public class MainActivity extends FragmentActivity implements MainContract.View 
 
     @Override
     public void showExitDialog() {
-        DialogUtils.showNoOrYesDialog(this,"Sure to quit?",
+        DialogUtils.showNoOrYesDialog(this, "Sure to quit?",
                 (dialog, index) -> dialog.dismiss(),
                 (dialog, index) -> finish());
-
     }
 
     @Override

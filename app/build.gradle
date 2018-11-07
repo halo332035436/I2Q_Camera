@@ -4,20 +4,20 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     buildToolsVersion '27.0.3'
-//    signingConfigs {
-//        config {
-//            keyAlias 'i2q'
-//            keyPassword '123456'
-//            storeFile file('D:/ASProjects/i2qCamera/assets/i2q.jks')
-//            storePassword '123456'
-//        }
-//    }
+    signingConfigs {
+        config {
+            keyAlias 'i2q'
+            keyPassword '123456'
+            storeFile file('D:/ASProjects/i2qCamera/assets/i2q.jks')
+            storePassword '123456'
+        }
+    }
     defaultConfig {
         applicationId "com.symbio.i2qcamera"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 10003
-        versionName "1.0.3"
+        versionCode 10004
+        versionName "1.0.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -29,7 +29,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            signingConfig signingConfigs.config
+            signingConfig signingConfigs.config
         }
     }
     compileOptions {

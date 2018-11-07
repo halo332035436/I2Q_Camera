@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.symbio.i2qcamera.R;
+import com.symbio.i2qcamera.base.BaseFragment;
 import com.symbio.i2qcamera.ui.activity.MainActivity;
 import com.symbio.i2qcamera.ui.adapter.FolderListAdapter;
 import com.symbio.i2qcamera.app.Config;
@@ -38,7 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class FolderFragment extends Fragment {
+public class FolderFragment extends BaseFragment {
 
     @BindView(R.id.number_folder_tv)
     TextView numberFolderTv;
@@ -50,22 +51,14 @@ public class FolderFragment extends Fragment {
     TextView mPathFolderTv;
     @BindView(R.id.title_folder_layout)
     LinearLayout mTitleFolderLayout;
-    private Unbinder mBinder;
     private File[] mJobs;
     private String currentDir = Config.BASE_PATH;
     private FolderListAdapter mAdapter;
 
-    public static Fragment newInstance() {
-        Fragment fragment = new FolderFragment();
-        return fragment;
-    }
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.view_folder, null);
-        mBinder = ButterKnife.bind(this, view);
-        return view;
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -131,6 +124,22 @@ public class FolderFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    public static Fragment newInstance() {
+        Fragment fragment = new FolderFragment();
+        return fragment;
+    }
+
+    @Override
+    public int getLayoutResID() {
+        return R.layout.view_folder;
+    }
+
     private void changeTitle() {
         if (isBasePath()) {
             numberFolderTv.setVisibility(View.VISIBLE);
@@ -139,24 +148,6 @@ public class FolderFragment extends Fragment {
             numberFolderTv.setVisibility(View.INVISIBLE);
             mTitleFolderLayout.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mBinder.unbind();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 
     private boolean isBasePath() {

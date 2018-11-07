@@ -22,7 +22,7 @@ public class FolderListAdapter extends BaseQuickAdapter<File, BaseViewHolder> {
         helper.setText(R.id.item_folder_name_tv, item.getName());
         boolean isNeedShowDocIcon = CommonUtil.isNeedShowDocIcon(item);
         helper.setImageResource(R.id.item_folder_icon_iv, isNeedShowDocIcon ? R.mipmap.document : R.mipmap.folder);
-        int needShowNum = CommonUtil.isNeedShowNum(item);
+        int needShowNum = CommonUtil.numberOfPictures(item);
         if (needShowNum > 0) {
             helper.setVisible(R.id.item_folder_num_tv, true);
             helper.setText(R.id.item_folder_num_tv, needShowNum > 99 ? "99+" : needShowNum + "");

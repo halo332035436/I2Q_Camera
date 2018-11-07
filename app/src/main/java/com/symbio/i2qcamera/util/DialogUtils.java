@@ -27,17 +27,20 @@ public class DialogUtils {
 
     }
 
+
     public static void singleSelectionDialog(Context context, int checkedIndex,
                                              String[] items, ItemSelectListener listener) {
-        new QMUIDialog.CheckableDialogBuilder(context)
-                .setCheckedIndex(checkedIndex)
-                .addItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        listener.onSelect(which);
-                        dialog.dismiss();
-                    }
-                })
+        QMUIDialog.CheckableDialogBuilder builder = new QMUIDialog.CheckableDialogBuilder(context);
+        if (checkedIndex != -1) {
+            builder.setCheckedIndex(checkedIndex);
+        }
+        builder.addItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                listener.onSelect(which);
+                dialog.dismiss();
+            }
+        })
                 .create(Config.QMUI_DIALOG_STYLE)
                 .show();
     }
@@ -45,16 +48,7 @@ public class DialogUtils {
     public static void singleSelectionDialog(Context context,
                                              String[] items,
                                              ItemSelectListener listener) {
-        new QMUIDialog.CheckableDialogBuilder(context)
-                .addItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        listener.onSelect(which);
-                        dialog.dismiss();
-                    }
-                })
-                .create(Config.QMUI_DIALOG_STYLE)
-                .show();
+        singleSelectionDialog(context, -1, items, listener);
     }
 
     public static void showSuccessTipDialog(Context context, View currentView, String tip) {

@@ -16,6 +16,11 @@ public class MainPresenterImpl implements MainContract.Presenter {
     }
 
     @Override
+    public void initDataAndEvent() {
+
+    }
+
+    @Override
     public void setCurrentItem(int index) {
 
     }

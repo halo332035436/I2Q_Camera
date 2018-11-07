@@ -8,9 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,9 +21,10 @@ import com.blankj.utilcode.util.SizeUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.huantansheng.easyphotos.EasyPhotos;
 import com.symbio.i2qcamera.R;
-import com.symbio.i2qcamera.ui.activity.AlbumActivity;
+import com.symbio.i2qcamera.base.BaseFragment;
 import com.symbio.i2qcamera.data.FolderRefreshEvent;
 import com.symbio.i2qcamera.data.ImgDeleteEvent;
+import com.symbio.i2qcamera.ui.activity.AlbumActivity;
 import com.symbio.i2qcamera.ui.activity.MainActivity;
 import com.symbio.i2qcamera.ui.adapter.ImgListAdapter;
 import com.symbio.i2qcamera.util.CommonUtil;
@@ -45,11 +44,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
-public class ImgFragment extends Fragment {
+public class ImgFragment extends BaseFragment {
 
     private static final String FILE_PROVIDER_AUTHORITY = "com.symbio.i2qcamera.fileprovider";
     private static final int REQUEST_CODE_CAMERA = 10001;
@@ -64,7 +61,6 @@ public class ImgFragment extends Fragment {
     RecyclerView mContentImgRv;
     @BindView(R.id.quick_img_tv)
     ImageView quickImgTv;
-    private Unbinder mBinder;
     private int num;
     private int padding;
     private ImgListAdapter mAdapter;
@@ -72,22 +68,14 @@ public class ImgFragment extends Fragment {
     private Handler mHandler = new Handler();
     private String[] mMenuList = new String[]{"Album", "Camera"};
 
-    public static Fragment newInstance() {
-        Fragment fragment = new ImgFragment();
-        return fragment;
-    }
-
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.view_img, null);
-        mBinder = ButterKnife.bind(this, view);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         int screenWidth = ScreenUtils.getScreenWidth();
         int dp101 = SizeUtils.dp2px(101);
         num = screenWidth / dp101;
         padding = (screenWidth % dp101) / 2;
-        return view;
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -97,6 +85,23 @@ public class ImgFragment extends Fragment {
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), num);
         mContentImgRv.setLayoutManager(layoutManager);
         initData();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    public static Fragment newInstance() {
+        Fragment fragment = new ImgFragment();
+        return fragment;
+    }
+
+
+    @Override
+    public int getLayoutResID() {
+        return R.layout.view_img;
     }
 
     private void initData() {
@@ -224,24 +229,6 @@ public class ImgFragment extends Fragment {
                 }
             }
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mBinder.unbind();
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

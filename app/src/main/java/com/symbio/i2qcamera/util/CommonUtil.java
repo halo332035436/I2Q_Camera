@@ -13,6 +13,13 @@ public class CommonUtil {
         return check;
     }
 
+
+    /**
+     * 是否为需要添加照片的目录
+     *
+     * @param item 当前目录
+     * @return
+     */
     public static boolean isNeedAddIMG(File item) {
         File[] files = item.listFiles(new FileFilter() {
             @Override
@@ -27,7 +34,13 @@ public class CommonUtil {
         return isLastPath;
     }
 
-    public static int isNeedShowNum(File item) {
+    /**
+     * 当前路径下的图片数量
+     *
+     * @param item 当前目录
+     * @return
+     */
+    public static int numberOfPictures(File item) {
         File[] files = item.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {

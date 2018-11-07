@@ -14,6 +14,7 @@ public interface MainContract {
     }
 
     interface Presenter {
+        void initDataAndEvent();
 
         void setCurrentItem(int index);
 

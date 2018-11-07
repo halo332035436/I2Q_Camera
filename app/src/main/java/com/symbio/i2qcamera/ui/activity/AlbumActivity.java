@@ -4,19 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.symbio.i2qcamera.R;
-import com.symbio.i2qcamera.ui.adapter.AlbumFragmentAdapter;
+import com.symbio.i2qcamera.base.BaseActivity;
 import com.symbio.i2qcamera.data.ImgDeleteEvent;
+import com.symbio.i2qcamera.ui.adapter.AlbumFragmentAdapter;
 import com.symbio.i2qcamera.ui.fragment.AlbumFragment;
+import com.symbio.i2qcamera.ui.view.PhotoViewPager;
 import com.symbio.i2qcamera.util.DialogUtils;
 import com.symbio.i2qcamera.util.WindowUtils;
-import com.symbio.i2qcamera.ui.view.PhotoViewPager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -25,11 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class AlbumActivity extends FragmentActivity {
+public class AlbumActivity extends BaseActivity {
 
     @BindView(R.id.back_album_iv)
     ImageView backAlbumIv;
@@ -43,24 +42,10 @@ public class AlbumActivity extends FragmentActivity {
     private AlbumFragmentAdapter mAdapter;
     private int mPage;
 
-    public static void start(Context context, String imgPath, List<File> data) {
-        Intent intent = new Intent(context, AlbumActivity.class);
-        intent.putExtra("path", imgPath);
-        ArrayList<String> pathData = new ArrayList<>();
-        for (File file : data) {
-            pathData.add(file.getAbsolutePath());
-        }
-        pathData.remove(pathData.size() - 1);
-        intent.putStringArrayListExtra("pathData", pathData);
-        context.startActivity(intent);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_album);
         WindowUtils.setStateBarColor(this, android.R.color.black);
-        ButterKnife.bind(this);
         Intent intent = getIntent();
         String path = intent.getStringExtra("path");
         ArrayList<String> pathData = intent.getStringArrayListExtra("pathData");
@@ -77,6 +62,23 @@ public class AlbumActivity extends FragmentActivity {
             initData();
             initListener();
         }
+    }
+
+    public static void start(Context context, String imgPath, List<File> data) {
+        Intent intent = new Intent(context, AlbumActivity.class);
+        intent.putExtra("path", imgPath);
+        ArrayList<String> pathData = new ArrayList<>();
+        for (File file : data) {
+            pathData.add(file.getAbsolutePath());
+        }
+        pathData.remove(pathData.size() - 1);
+        intent.putStringArrayListExtra("pathData", pathData);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public int getLayoutResID() {
+        return R.layout.activity_album;
     }
 
     private void initListener() {
