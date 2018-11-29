@@ -1,6 +1,8 @@
 package com.symbio.i2qcamera.ui.fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -8,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -67,15 +70,27 @@ public class ImgFragment extends BaseFragment {
     private File mCurrentFile;
     private Handler mHandler = new Handler();
     private String[] mMenuList = new String[]{"Album", "Camera"};
+    private boolean alertPermission;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int screenWidth = ScreenUtils.getScreenWidth();
+        int resourceId = getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int size = 0;
+        if (resourceId > 0) {
+            size = getContext().getResources().getDimensionPixelSize(resourceId);
+        }
         int dp101 = SizeUtils.dp2px(101);
-        num = screenWidth / dp101;
+        num = (screenWidth - size) / dp101;
         padding = (screenWidth % dp101) / 2;
         EventBus.getDefault().register(this);
+        PackageManager pm = getContext().getPackageManager();
+//        alertPermission = (PackageManager.PERMISSION_GRANTED ==
+//                pm.checkPermission(Manifest.permission.SYSTEM_ALERT_WINDOW, getContext().getPackageName()));
+//        alertPermission = ;
+
+        setRetainInstance(true);
     }
 
     @Override
@@ -90,6 +105,7 @@ public class ImgFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.e("ImgFragment", "onDestroy");
         EventBus.getDefault().unregister(this);
     }
 
@@ -102,6 +118,10 @@ public class ImgFragment extends BaseFragment {
     @Override
     public int getLayoutResID() {
         return R.layout.view_img;
+    }
+
+    public boolean isNeedReload() {
+        return mCurrentFile == null && mAdapter == null;
     }
 
     private void initData() {
@@ -192,12 +212,14 @@ public class ImgFragment extends BaseFragment {
     }
 
     private void showMenu() {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                WindowUtils.showPopupWindow(getContext(), mCurrentFile);
-            }
-        }, 800);
+        if (PermissionUtils.isGranted(Manifest.permission.SYSTEM_ALERT_WINDOW)) {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    WindowUtils.showPopupWindow(getContext(), mCurrentFile);
+                }
+            }, 800);
+        }
     }
 
     @Override
@@ -208,7 +230,9 @@ public class ImgFragment extends BaseFragment {
                 executeImageResult(data);
             }
         } else if (requestCode == REQUEST_CODE_CAMERA) {
-            WindowUtils.hidePopupWindow();
+            if (PermissionUtils.isGranted(Manifest.permission.SYSTEM_ALERT_WINDOW)) {
+                WindowUtils.hidePopupWindow();
+            }
             if (resultCode == RESULT_CODE_SUCCESS) {
                 takePhoto();
                 executeImageResult(data);
@@ -247,6 +271,9 @@ public class ImgFragment extends BaseFragment {
                 EventBus.getDefault().post(new FolderRefreshEvent());
                 break;
             case R.id.quick_img_tv:
+                if (mCurrentFile == null) {
+                    return;
+                }
                 File parentFile = mCurrentFile.getParentFile();
                 File[] files = parentFile.listFiles(new FileFilter() {
                     @Override

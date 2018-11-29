@@ -11,12 +11,11 @@ import java.util.List;
 
 public class AlbumFragmentAdapter extends FragmentStatePagerAdapter {
 
-    private List<Fragment> mFragments = new ArrayList<>();
+    private List<Fragment> mFragments;
 
     public AlbumFragmentAdapter(FragmentManager fm, List<Fragment> fragments) {
         super(fm);
-        mFragments.clear();
-        mFragments.addAll(fragments);
+        mFragments = fragments;
     }
 
     @Override

@@ -10,14 +10,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_40"
-        android:text="qwertyuiop" />
+        android:text="qwertyuiop"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/quit_empty_btn"
-        android:layout_width="match_parent"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:layout_marginRight="100dp"
+        android:layout_gravity="center_horizontal"
         android:text="OK" />
 
 </LinearLayout>

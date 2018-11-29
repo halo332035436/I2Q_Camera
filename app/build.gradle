@@ -16,8 +16,8 @@ android {
         applicationId "com.symbio.i2qcamera"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 10004
-        versionName "1.0.4"
+        versionCode 10005
+        versionName "1.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {

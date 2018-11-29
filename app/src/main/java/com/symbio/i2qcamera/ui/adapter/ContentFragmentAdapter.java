@@ -6,17 +6,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ContentFragmentAdapter extends FragmentPagerAdapter {
 
-    private List<Fragment> mFragments = new ArrayList<>();
+    private List<Fragment> mFragments;
 
     public ContentFragmentAdapter(FragmentManager fm, List<Fragment> fragments) {
         super(fm);
-        mFragments.clear();
-        mFragments.addAll(fragments);
+        mFragments = fragments;
     }
 
     @Override

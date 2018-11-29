@@ -1,8 +1,11 @@
 package com.symbio.i2qcamera.ui.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.FileUtils;
@@ -36,6 +39,11 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     private List<Fragment> mFragments;
     private ContentFragmentAdapter mAdapter;
     private MainContract.Presenter mPresenter;
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,8 +119,15 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     }
 
     public void showImgView(File file) {
-        mainContentVp.setCurrentItem(2);
         ImgFragment fragment = (ImgFragment) mFragments.get(2);
+        if (fragment.isNeedReload()) {
+            Intent LaunchIntent = getPackageManager().getLaunchIntentForPackage(getApplication().getPackageName());
+            LaunchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(LaunchIntent);
+            Toast.makeText(this, "The resources have been recovered by the system", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mainContentVp.setCurrentItem(2);
         fragment.loadCheckPath(file);
     }
 
