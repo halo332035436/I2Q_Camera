@@ -6,14 +6,18 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.symbio.i2qcamera.R;
 import com.symbio.i2qcamera.base.BaseFragment;
 import com.symbio.i2qcamera.ui.activity.MainActivity;
@@ -51,9 +55,12 @@ public class FolderFragment extends BaseFragment {
     TextView mPathFolderTv;
     @BindView(R.id.title_folder_layout)
     LinearLayout mTitleFolderLayout;
+    @BindView(R.id.filter_folder_iv)
+    ImageView mFilterFolderIv;
     private File[] mJobs;
     private String currentDir = Config.BASE_PATH;
     private FolderListAdapter mAdapter;
+    private String filterWord = "";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,12 +72,7 @@ public class FolderFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         File file = new File(Config.BASE_PATH);
-        mJobs = file.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.startsWith("JOB");
-            }
-        });
+        mJobs = file.listFiles();
         if (mJobs != null && mJobs.length > 0) {
             numberFolderTv.setText("You have " + mJobs.length + " Jobs:");
             LinearLayoutManager manager = new LinearLayoutManager(getContext());
@@ -143,9 +145,11 @@ public class FolderFragment extends BaseFragment {
     private void changeTitle() {
         if (isBasePath()) {
             numberFolderTv.setVisibility(View.VISIBLE);
+            mFilterFolderIv.setVisibility(View.VISIBLE);
             mTitleFolderLayout.setVisibility(View.INVISIBLE);
         } else {
             numberFolderTv.setVisibility(View.INVISIBLE);
+            mFilterFolderIv.setVisibility(View.INVISIBLE);
             mTitleFolderLayout.setVisibility(View.VISIBLE);
         }
     }
@@ -154,7 +158,7 @@ public class FolderFragment extends BaseFragment {
         return currentDir.equals(Config.BASE_PATH);
     }
 
-    @OnClick({R.id.back_folder_iv})
+    @OnClick({R.id.back_folder_iv, R.id.filter_folder_iv})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.back_folder_iv:
@@ -169,6 +173,42 @@ public class FolderFragment extends BaseFragment {
                     refreshFileList(parentFile, files);
                     mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
                 }
+                break;
+            case R.id.filter_folder_iv:
+                final QMUIDialog.EditTextDialogBuilder builder = new QMUIDialog.EditTextDialogBuilder(getActivity());
+                builder.setTitle("Folder Filter")
+                        .setPlaceholder("Enter keywords here~")
+                        .setInputType(InputType.TYPE_CLASS_TEXT)
+                        .addAction("reset", new QMUIDialogAction.ActionListener() {
+                            @Override
+                            public void onClick(QMUIDialog dialog, int index) {
+                                filterWord = "";
+                                File file = new File(currentDir);
+                                mJobs = file.listFiles();
+                                numberFolderTv.setText("You have " + mJobs.length + " Jobs:");
+                                refreshFileList(file, mJobs);
+                                dialog.dismiss();
+                            }
+                        })
+                        .addAction("confirm", new QMUIDialogAction.ActionListener() {
+                            @Override
+                            public void onClick(QMUIDialog dialog, int index) {
+                                CharSequence text = builder.getEditText().getText();
+                                filterWord = String.valueOf(text);
+                                File file = new File(currentDir);
+                                mJobs = file.listFiles(new FilenameFilter() {
+                                    @Override
+                                    public boolean accept(File dir, String name) {
+                                        return name.toUpperCase().contains(filterWord.toUpperCase());
+                                    }
+                                });
+                                numberFolderTv.setText("You have " + mJobs.length + " Jobs:");
+                                refreshFileList(file, mJobs);
+                                dialog.dismiss();
+                            }
+                        })
+                        .create(com.qmuiteam.qmui.R.style.QMUI_Dialog).show();
+                builder.getEditText().setText(filterWord);
                 break;
         }
     }

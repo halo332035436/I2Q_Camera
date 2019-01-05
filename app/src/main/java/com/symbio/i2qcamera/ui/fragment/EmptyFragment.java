@@ -29,8 +29,7 @@ public class EmptyFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView textView = view.findViewById(R.id.tips_empty_tv);
-        textView.setText(Config.EMPTY_DIR_TEXT);
+        tipsEmptyView.setText(Config.EMPTY_DIR_TEXT);
     }
 
     public static Fragment newInstance() {
